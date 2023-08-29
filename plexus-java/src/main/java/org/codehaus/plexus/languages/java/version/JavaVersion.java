@@ -51,7 +51,7 @@ public class JavaVersion implements Comparable<JavaVersion> {
     private final boolean isMajor;
 
     private JavaVersion(String rawVersion, boolean isMajor) {
-        this.rawVersion = rawVersion;
+        this.rawVersion = Objects.requireNonNull(rawVersion, "rawVersion must not be null");
         this.isMajor = isMajor;
     }
 
@@ -130,7 +130,7 @@ public class JavaVersion implements Comparable<JavaVersion> {
      * Verify if this version is before some other version
      *
      * @param other the version to compare with
-     * @return {@code true} is this is less than {@code other}, otherwise {@code false}
+     * @return {@code true} if this is less than {@code other}, otherwise {@code false}
      */
     public boolean isBefore(JavaVersion other) {
         return this.compareTo(other) < 0;
@@ -140,7 +140,7 @@ public class JavaVersion implements Comparable<JavaVersion> {
      * Verify if this version is before some other version
      *
      * @param other the version to compare with
-     * @return {@code true}  is this is less than {@code other}, otherwise {@code false}
+     * @return {@code true} if this is less than {@code other}, otherwise {@code false}
      */
     public boolean isBefore(String other) {
         return this.compareTo(parse(other)) < 0;
@@ -150,7 +150,7 @@ public class JavaVersion implements Comparable<JavaVersion> {
      * Verify if this version is at least some other version
      *
      * @param other the version to compare with
-     * @return  {@code true}  is this is greater than or equal to {@code other}, otherwise {@code false}
+     * @return {@code true} if this is greater than or equal to {@code other}, otherwise {@code false}
      */
     public boolean isAtLeast(JavaVersion other) {
         return this.compareTo(other) >= 0;
@@ -160,7 +160,7 @@ public class JavaVersion implements Comparable<JavaVersion> {
      * Verify if this version is at least some other version
      *
      * @param other the version to compare with
-     * @return  {@code true} is this is greater than or equal to {@code other}, otherwise {@code false}
+     * @return {@code true} if this is greater than or equal to {@code other}, otherwise {@code false}
      */
     public boolean isAtLeast(String other) {
         return this.compareTo(parse(other)) >= 0;
@@ -226,6 +226,9 @@ public class JavaVersion implements Comparable<JavaVersion> {
 
     @Override
     public int hashCode() {
+        if (rawVersion != null && !isMajor) {
+            return Objects.hashCode(rawVersion.substring(2));
+        }
         return Objects.hashCode(rawVersion);
     }
 
@@ -234,10 +237,7 @@ public class JavaVersion implements Comparable<JavaVersion> {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof JavaVersion)) {
             return false;
         }
 

@@ -158,4 +158,20 @@ public class JavaVersionTest {
         assertThat(JavaVersion.parse("3.2.1").getValue(2), is("3.2"));
         assertThat(JavaVersion.parse("3.2.1").getValue(3), is("3.2.1"));
     }
+
+    @Test
+    public void equalsContract() {
+        assertEquals(JavaVersion.parse("1.6"), JavaVersion.parse("1.6"));
+        assertEquals(
+                JavaVersion.parse("1.6").hashCode(), JavaVersion.parse("1.6").hashCode());
+
+        assertEquals(JavaVersion.parse("8"), JavaVersion.parse("1.8"));
+        assertEquals(JavaVersion.parse("8").hashCode(), JavaVersion.parse("1.8").hashCode());
+
+        assertEquals(
+                JavaVersion.parse("11.0.5").getValue(1), JavaVersion.parse("11").getValue());
+        assertEquals(
+                JavaVersion.parse("17.0.10").getValue(1).hashCode(),
+                JavaVersion.parse("17").hashCode());
+    }
 }
